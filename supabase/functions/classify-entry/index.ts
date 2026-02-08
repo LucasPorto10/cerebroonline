@@ -3,26 +3,27 @@
 // @ts-ignore - Deno npm: specifier
 import { GoogleGenAI } from "npm:@google/genai@^1.0.0"
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')
-if (!GEMINI_API_KEY) {
-  throw new Error('Missing GEMINI_API_KEY environment variable')
-}
-
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Initialize the GoogleGenAI client with the API key (as per official docs)
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
-
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
     // Handle CORS preflight requests
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
     }
 
     try {
+        const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')
+        if (!GEMINI_API_KEY) {
+            console.error("Error: GEMINI_API_KEY is missing")
+            throw new Error('Missing GEMINI_API_KEY environment variable')
+        }
+
+        // Initialize the GoogleGenAI client
+        const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
+        
         const { content } = await req.json()
 
         if (!content) {
@@ -82,7 +83,7 @@ Text: "${content}"
         })
 
     } catch (error) {
-        console.error("Gemini SDK Error:", error)
+        console.error("Edge Function Error:", error)
         // Log stack trace if available
         if (error instanceof Error && error.stack) {
             console.error(error.stack);
