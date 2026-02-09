@@ -25,6 +25,7 @@ interface GoalCardProps {
     onDecrement: () => void
     onEdit: () => void
     onDelete: () => void
+    onClick?: () => void
     index?: number
 }
 
@@ -34,6 +35,7 @@ export function GoalCard({
     onDecrement, 
     onEdit, 
     onDelete,
+    onClick,
     index = 0 
 }: GoalCardProps) {
     const isComplete = goal.current >= goal.target
@@ -46,8 +48,9 @@ export function GoalCard({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
             transition={{ delay: index * 0.05, type: 'spring', stiffness: 400, damping: 30 }}
+            onClick={onClick}
             className={cn(
-                "group relative bg-card rounded-2xl border p-5 transition-all hover:shadow-md",
+                "group relative bg-card rounded-2xl border p-5 transition-all hover:shadow-md cursor-pointer",
                 isComplete 
                     ? "border-emerald-500/20" 
                     : "border-border hover:border-border/80"

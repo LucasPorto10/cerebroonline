@@ -6,7 +6,8 @@ import { Target, Plus, Calendar, TrendingUp, Sparkles, ChevronLeft, ChevronRight
 import { cn } from '@/lib/utils'
 import { GoalCard, Goal } from '@/components/features/GoalCard'
 import { AddGoalDialog, NewGoal } from '@/components/features/AddGoalDialog'
-import { startOfWeek, startOfMonth, format, addWeeks, subWeeks, addMonths, subMonths } from 'date-fns'
+import { GoalDetailView } from '@/components/features/GoalDetailView'
+import { startOfWeek, startOfMonth, format, addWeeks, subWeeks, addMonths, subMonths, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { toast } from 'sonner'
 import { useAuth } from '@/providers/auth-provider'
@@ -19,6 +20,7 @@ export default function Goals() {
     const [activeTab, setActiveTab] = useState<PeriodType>('weekly')
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
     const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
+    const [detailGoal, setDetailGoal] = useState<Goal | null>(null)
     const [currentWeekOffset, setCurrentWeekOffset] = useState(0)
     const [currentMonthOffset, setCurrentMonthOffset] = useState(0)
 
@@ -112,6 +114,80 @@ export default function Goals() {
         },
         onError: () => toast.error('Erro ao remover')
     })
+
+    // Update goal details mutation (for editing title, emoji, target, unit)
+    const updateGoalDetails = useMutation({
+        mutationFn: async ({ id, title, emoji, target, unit }: { id: string; title: string; emoji: string; target: number; unit: string }) => {
+            const { error } = await (supabase as any).from('goals').update({ title, emoji, target, unit }).eq('id', id)
+            if (error) throw error
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['goals'] })
+            toast.success('Meta atualizada! ✨')
+        },
+        onError: () => toast.error('Erro ao atualizar meta')
+    })
+
+    // Fetch goal completions for detail view
+    const { data: goalCompletions = [] } = useQuery<{ id: string; goal_id: string; completed_date: string }[]>({
+        queryKey: ['goal_completions', detailGoal?.id],
+        queryFn: async () => {
+            if (!detailGoal) return []
+            const { data, error } = await (supabase as any)
+                .from('goal_completions')
+                .select('*')
+                .eq('goal_id', detailGoal.id)
+            if (error) throw error
+            return data || []
+        },
+        enabled: !!detailGoal
+    })
+
+    // Toggle completion mutation
+    const toggleCompletion = useMutation({
+        mutationFn: async ({ goalId, date }: { goalId: string; date: Date }) => {
+            if (!user?.id) throw new Error('Not authenticated')
+            const dateStr = format(date, 'yyyy-MM-dd')
+            
+                // Check if already completed
+            const { data: existing, error: fetchError } = await (supabase as any)
+                .from('goal_completions')
+                .select('id')
+                .eq('goal_id', goalId)
+                .eq('completed_date', dateStr)
+                .maybeSingle()
+            
+            if (fetchError) throw fetchError
+
+            if (existing) {
+                // Remove completion
+                const { error } = await (supabase as any)
+                    .from('goal_completions')
+                    .delete()
+                    .eq('id', existing.id)
+                if (error) throw error
+            } else {
+                // Add completion
+                const { error } = await (supabase as any)
+                    .from('goal_completions')
+                    .insert({ goal_id: goalId, user_id: user.id, completed_date: dateStr })
+                if (error) throw error
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['goal_completions'] })
+            toast.success('Registro atualizado! ✅')
+        },
+        onError: () => toast.error('Erro ao atualizar registro')
+    })
+
+    // Convert completions to Date array
+    const completedDates = useMemo(() => {
+        const dates = goalCompletions.map(c => parseISO(c.completed_date))
+        return dates.filter((date, i, self) => 
+            self.findIndex(d => d.getTime() === date.getTime()) === i
+        )
+    }, [goalCompletions])
 
     // Stats
     const completedGoals = goals.filter(g => g.current >= g.target).length
@@ -223,6 +299,7 @@ export default function Goals() {
                             onDecrement={() => updateGoal.mutate({ id: goal.id, current: Math.max(0, goal.current - 1) })}
                             onEdit={() => setEditingGoal(goal)}
                             onDelete={() => deleteGoal.mutate(goal.id)}
+                            onClick={() => setDetailGoal(goal)}
                         />
                     ))}
                 </AnimatePresence>
@@ -282,8 +359,45 @@ export default function Goals() {
                     setIsAddDialogOpen(false)
                     setEditingGoal(null)
                 }}
-                onSave={(goal) => createGoal.mutate(goal)}
+                onSave={(goal) => {
+                    if (editingGoal) {
+                        updateGoalDetails.mutate({ id: editingGoal.id, ...goal })
+                    } else {
+                        createGoal.mutate(goal)
+                    }
+                }}
                 periodType={activeTab}
+                editingGoal={editingGoal ? {
+                    id: editingGoal.id,
+                    title: editingGoal.title,
+                    emoji: editingGoal.emoji,
+                    target: editingGoal.target,
+                    unit: editingGoal.unit,
+                    category: editingGoal.category
+                } : undefined}
+            />
+
+            {/* Goal Detail View */}
+            <GoalDetailView
+                goal={detailGoal}
+                isOpen={!!detailGoal}
+                onClose={() => setDetailGoal(null)}
+                onEdit={() => {
+                    setEditingGoal(detailGoal)
+                    setDetailGoal(null)
+                }}
+                onDelete={() => {
+                    if (detailGoal) {
+                        deleteGoal.mutate(detailGoal.id)
+                        setDetailGoal(null)
+                    }
+                }}
+                completedDates={completedDates}
+                onToggleDate={(date) => {
+                    if (detailGoal) {
+                        toggleCompletion.mutate({ goalId: detailGoal.id, date })
+                    }
+                }}
             />
         </div>
     )

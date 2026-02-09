@@ -7,7 +7,16 @@ import { startOfWeek, startOfMonth, format } from 'date-fns'
 export interface ClassificationResult {
     category_slug: string
     entry_type: 'task' | 'note' | 'insight' | 'bookmark' | 'goal'
-    metadata: any
+    metadata: {
+        summary?: string
+        tags?: string[]
+        emoji?: string
+        target?: number
+        unit?: string
+        period_type?: 'weekly' | 'monthly'
+        due_date?: string | null
+        priority?: 'low' | 'medium' | 'high' | 'urgent' | null
+    }
 }
 
 export function useCapture() {
@@ -19,18 +28,38 @@ export function useCapture() {
             if (!user) throw new Error('User not authenticated')
 
             // 1. Call Edge Function to classify
-            const { data: classification, error: aiError } = await supabase.functions.invoke<ClassificationResult>('classify-entry', {
-                body: { content: text }
-            })
+            let classification: ClassificationResult | null = null
+            
+            try {
+                const { data, error: aiError } = await supabase.functions.invoke<ClassificationResult>('classify-entry', {
+                    body: { content: text }
+                })
+                
+                if (aiError) {
+                    console.warn('AI Classification failed, falling back to default:', aiError)
+                    // Fallback will be handled below
+                } else {
+                    classification = data
+                }
+            } catch (err) {
+                console.warn('AI Invocation exception:', err)
+            }
 
-            if (aiError) throw aiError
-
+            // Fallback defaults if AI failed or returned null
             const targetSlug = classification?.category_slug || 'ideas'
             const entryType = (classification?.entry_type || 'note').toLowerCase()
+            const metadata = classification?.metadata || { summary: text, priority: 'medium' } 
+            
+            // Allow manual override of priority in metadata if AI failed
+            if (!classification) {
+                // Simple local heuristic for priority while AI is down
+                if (text.toLowerCase().includes('urgente')) metadata.priority = 'urgent'
+            }
 
             // HANDLE GOALS SEPARATELY
             if (entryType === 'goal') {
-                const metadata = classification?.metadata || {}
+                // Metadata is already defined above
+
                 
                 // DATA NORMALIZATION: Ensure period_type matches Postgres check constraint
                 // Database only accepts ['weekly', 'monthly']
@@ -108,8 +137,11 @@ export function useCapture() {
                     content: text,
                     category_id: categoryId, // If undefined, Supabase treats as null (which is allowed)
                     entry_type: finalEntryType,
-                    metadata: classification?.metadata || {},
-                    status: 'pending'
+                    metadata: metadata,
+                    status: 'pending',
+                    due_date: metadata.due_date || null,
+                    priority: metadata.priority || null,
+                    tags: metadata.tags || []
                 })
                 .select()
                 .single()

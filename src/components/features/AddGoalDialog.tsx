@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,10 +25,25 @@ const emojiOptions = ['🏋️', '📚', '💧', '🧘', '🏃', '💤', '🥗',
 const unitOptions = ['dias', 'vezes', 'horas', 'minutos', 'km', 'litros']
 
 export function AddGoalDialog({ isOpen, onClose, onSave, periodType, editingGoal }: AddGoalDialogProps) {
-    const [title, setTitle] = useState(editingGoal?.title || '')
-    const [emoji, setEmoji] = useState(editingGoal?.emoji || '🎯')
-    const [target, setTarget] = useState(editingGoal?.target || 4)
-    const [unit, setUnit] = useState(editingGoal?.unit || 'dias')
+    const [title, setTitle] = useState('')
+    const [emoji, setEmoji] = useState('🎯')
+    const [target, setTarget] = useState(4)
+    const [unit, setUnit] = useState('dias')
+
+    // Sync state when editingGoal changes
+    useEffect(() => {
+        if (editingGoal) {
+            setTitle(editingGoal.title)
+            setEmoji(editingGoal.emoji)
+            setTarget(editingGoal.target)
+            setUnit(editingGoal.unit)
+        } else {
+            setTitle('')
+            setEmoji('🎯')
+            setTarget(4)
+            setUnit('dias')
+        }
+    }, [editingGoal])
 
     const handleSave = () => {
         if (!title.trim()) return

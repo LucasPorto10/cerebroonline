@@ -2,8 +2,7 @@ import { useEffect, useRef } from 'react'
 import { supabase } from '@/api/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
 
 interface Entry {
     id: string
@@ -38,24 +37,19 @@ export function useAutoEmoji(entries: Entry[] | undefined) {
                 processingRef.current.add(entry.id)
 
                 try {
-                    // Call the classify-entry Edge Function
-                    const response = await fetch(`${SUPABASE_URL}/functions/v1/classify-entry`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        },
-                        body: JSON.stringify({ content: entry.content }),
+                    // Call the classify-entry Edge Function using the official invoke method
+                    // This correctly handles user session JWT
+                    const { data, error: aiError } = await supabase.functions.invoke('classify-entry', {
+                        body: { content: entry.content }
                     })
 
-                    if (!response.ok) {
-                        console.error('Error calling Edge Function:', response.statusText)
+                    if (aiError) {
+                        console.error('Error calling Edge Function:', aiError.message)
                         processingRef.current.delete(entry.id)
                         continue
                     }
 
-                    const result = await response.json()
-                    const emoji = result?.metadata?.emoji
+                    const emoji = data?.metadata?.emoji
 
                     if (emoji) {
                         // Update the entry with the new emoji

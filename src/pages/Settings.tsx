@@ -12,7 +12,7 @@ import { motion } from 'framer-motion'
 import { 
   User, Lock, Save, Mail, Calendar, 
   Sparkles, Trophy, Target, CheckCircle2, Clock,
-  Palette, Moon, Zap, Sun
+  Palette, Moon, Zap, Sun, HardDrive
 } from 'lucide-react'
 import { useAppearance } from '@/hooks/useAppearance'
 import { cn } from '@/lib/utils'
@@ -122,6 +122,81 @@ export default function Settings() {
   const totalTasks = (statsData?.pending || 0) + (statsData?.inProgress || 0) + (statsData?.completed || 0)
   const completionRate = totalTasks > 0 ? Math.round((statsData?.completed || 0) / totalTasks * 100) : 0
 
+  const [isReprocessing, setIsReprocessing] = useState(false)
+  const [reprocessProgress, setReprocessProgress] = useState(0)
+  const [reprocessTotal, setReprocessTotal] = useState(0)
+
+  const handleReprocessEntries = async () => {
+    if (!confirm('Isso irá reanalisar todas as suas notas e tarefas antigas para extrair datas e prioridades. Deseja continuar?')) return
+
+    setIsReprocessing(true)
+    setReprocessProgress(0)
+    setReprocessTotal(0)
+
+    try {
+      // 1. Fetch all candidate entries
+     const { data: entries, error } = await supabase
+        .from('entries')
+        .select('id, content, entry_type, category_id')
+        .in('entry_type', ['task', 'note'])
+        .is('due_date', null) // Only those without dates? Or all? User said "antigos... devem ser editados". Safest is reprocess all or those without metadata. Let's do all tasks/notes to be sure.
+        // Actually, let's filter by those that might need it.
+        // For now, let's fetch ALL tasks and notes to ensure everything is up to date.
+      
+      if (error) throw error
+      if (!entries?.length) {
+        toast.info('Nenhuma entrada para reprocessar.')
+        return
+      }
+
+      setReprocessTotal(entries.length)
+      let processed = 0
+
+      // 2. Process in batches to avoid overwhelming the browser/network
+      const BATCH_SIZE = 3
+      for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+        const batch = entries.slice(i, i + BATCH_SIZE)
+        
+        await Promise.all(batch.map(async (entry) => {
+          try {
+            const { data: classification, error: aiError } = await supabase.functions.invoke('classify-entry', {
+              body: { content: entry.content }
+            })
+
+            if (aiError) throw aiError
+
+            const updates: any = {
+                metadata: { ...((entry as any).metadata || {}), ...classification.metadata },
+                tags: classification.metadata?.tags || [],
+                updated_at: new Date().toISOString()
+            }
+
+            if (classification.metadata?.due_date) updates.due_date = classification.metadata.due_date
+            if (classification.metadata?.priority) updates.priority = classification.metadata.priority
+
+            await supabase
+              .from('entries')
+              .update(updates)
+              .eq('id', entry.id)
+
+          } catch (err) {
+            console.error(`Falha ao processar entrada ${entry.id}:`, err)
+          }
+        }))
+
+        processed += batch.length
+        setReprocessProgress(Math.min(processed, entries.length))
+      }
+
+      toast.success('Reprocessamento concluído! 🎉')
+
+    } catch (error: any) {
+      toast.error('Erro ao reprocessar: ' + error.message)
+    } finally {
+      setIsReprocessing(false)
+    }
+  }
+
   return (
     <div className="min-h-screen pb-20">
       {/* Hero Profile Section */}
@@ -187,6 +262,7 @@ export default function Settings() {
                 { id: 'profile', label: 'Perfil', icon: User },
                 { id: 'preferences', label: 'Aparência', icon: Palette },
                 { id: 'security', label: 'Segurança', icon: Lock },
+                { id: 'data', label: 'Dados', icon: HardDrive },
             ].map((tab) => (
                 <button
                 key={tab.id}
@@ -488,7 +564,63 @@ export default function Settings() {
             </div>
           </motion.div>
         )}
+
+        {activeTab === 'data' && (
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-3xl border border-border bg-card p-6 shadow-sm max-w-xl"
+            >
+                <div className="flex items-center gap-3 mb-6">
+                <div className="p-2.5 rounded-2xl bg-blue-500/10 text-blue-500">
+                    <HardDrive className="w-5 h-5" />
+                </div>
+                <div>
+                    <h3 className="font-semibold text-foreground">Gestão de Dados</h3>
+                    <p className="text-sm text-muted-foreground">Gerencie suas informações e ferramentas avançadas</p>
+                </div>
+                </div>
+
+                <div className="space-y-6">
+                <div className="p-4 bg-muted/50 rounded-2xl space-y-4">
+                    <div className="flex items-start gap-3">
+                        <Sparkles className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                            <h4 className="font-medium text-foreground">Reprocessar Inteligência Artificial</h4>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Reanalisa todas as suas tarefas e notas antigas para extrair datas de vencimento, prioridades e tags que podem ter sido perdidas.
+                            </p>
+                        </div>
+                    </div>
+
+                    {isReprocessing ? (
+                        <div className="space-y-2">
+                             <div className="h-2 w-full bg-muted/50 rounded-full overflow-hidden">
+                                <div 
+                                    className="h-full bg-primary transition-all duration-300"
+                                    style={{ width: `${(reprocessProgress / reprocessTotal) * 100}%` }}
+                                />
+                             </div>
+                             <p className="text-xs text-center text-muted-foreground">
+                                Processando {reprocessProgress} de {reprocessTotal}...
+                             </p>
+                        </div>
+                    ) : (
+                        <Button 
+                            onClick={handleReprocessEntries}
+                            disabled={isReprocessing}
+                            variant="default"
+                            className="w-full rounded-xl"
+                        >
+                            Iniciar Reprocessamento
+                        </Button>
+                    )}
+                </div>
+                </div>
+            </motion.div>
+        )}
       </div>
     </div>
   )
 }
+

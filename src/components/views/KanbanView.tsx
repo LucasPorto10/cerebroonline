@@ -357,6 +357,15 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
                                 {priorityConfig.label}
                             </span>
                         )}
+                        {(priority === 'medium' || priority === 'low') && (
+                            <span className={cn(
+                                "text-[10px] uppercase tracking-wide font-medium px-1.5 py-0.5 rounded",
+                                priorityConfig.bg,
+                                priorityConfig.color
+                            )}>
+                                {priorityConfig.label}
+                            </span>
+                        )}
                     </div>
 
                     {/* Content */}

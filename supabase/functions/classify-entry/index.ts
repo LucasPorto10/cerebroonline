@@ -19,29 +19,61 @@ Deno.serve(async (req: Request) => {
         const { content } = await req.json()
         if (!content) throw new Error('Content is required')
 
+        const today = new Date().toISOString()
         const prompt = `
-Analise o texto e classifique-o para o app CerebroOnline (by PortoSol).
-Categorias: home, work, uni, ideas.
-Tipos: task, note, insight, bookmark, goal.
+Contexto: Hoje é ${today}.
+Você é um assistente inteligente que classifica textos para o app CerebroOnline.
 
-IMPORTANTE: Se for uma META (ex: "correr 5km", "estudar 2h", "meta: ler 10 paginas"), use obrigatoriamente entry_type: 'goal'.
+## CATEGORIAS
+- home: tarefas domésticas, pessoais, família
+- work: trabalho, projetos profissionais
+- uni: estudos, universidade, cursos
+- ideas: ideias, brainstorm, projetos futuros
 
-Retorne APENAS JSON:
+## TIPOS
+- task: tarefa a fazer
+- note: anotação simples
+- insight: ideia/reflexão
+- bookmark: link/referência
+- goal: META com objetivo numérico (ex: "correr 5km", "estudar 2h")
+
+## REGRAS CRÍTICAS DE EXTRAÇÃO
+
+### 1. PRIORIDADE (MUITO IMPORTANTE - ANALISE COM CUIDADO!)
+Procure ATIVAMENTE por palavras-chave de prioridade no texto:
+
+**URGENTE (urgent):** "urgente", "urgência", "agora", "imediato", "asap", "crítico", "emergência"
+**ALTA (high):** "importante", "prioridade", "essencial", "necessário", "preciso muito"  
+**MÉDIA (medium):** "quando puder", "sem pressa", "normal"
+**BAIXA (low):** "talvez", "um dia", "se der tempo", "opcional"
+
+⚠️ SE O TEXTO CONTIVER A PALAVRA "URGENTE" OU SIMILAR, A PRIORIDADE DEVE SER "urgent"!
+⚠️ NÃO USE "medium" COMO PADRÃO! Use null se não houver indicação clara.
+
+### 2. DATA DE VENCIMENTO
+Se houver menção temporal (ex: "amanhã", "sexta", "semana que vem"), calcule a data ISO 8601.
+
+### 3. IDIOMA
+TUDO em PORTUGUÊS DO BRASIL (tags, resumo, etc.)
+
+## RESPOSTA (apenas JSON válido):
 {
-  "_thought_process": "razão da escolha em português",
-  "category_slug": "home" | "work" | "uni" | "ideas",
-  "entry_type": "task" | "note" | "insight" | "bookmark" | "goal",
+  "_thought_process": "análise detalhada da prioridade encontrada",
+  "category_slug": "home|work|uni|ideas",
+  "entry_type": "task|note|insight|bookmark|goal",
   "metadata": {
-    "summary": "resumo curto em português",
+    "summary": "resumo curto",
     "tags": ["tag1", "tag2"],
     "emoji": "🎯",
-    "target": number,
-    "unit": "string",
-    "period_type": "weekly" | "monthly"
+    "target": null,
+    "unit": null,
+    "period_type": null,
+    "due_date": null,
+    "priority": "low|medium|high|urgent|null"
   }
 }
 
-Texto: "${content}"
+Texto para analisar: "${content}"
 `
 
         const model = 'gemini-flash-lite-latest'
