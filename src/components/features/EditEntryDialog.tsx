@@ -17,9 +17,9 @@ interface EditEntryDialogProps {
 }
 
 const statusOptions = [
-    { value: 'pending', label: 'Pendente', icon: Clock, color: 'bg-amber-50 text-amber-700 border-amber-200' },
-    { value: 'in_progress', label: 'Em Progresso', icon: PlayCircle, color: 'bg-blue-50 text-blue-700 border-blue-200' },
-    { value: 'done', label: 'Concluído', icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+    { value: 'pending', label: 'Pendente', icon: Clock, color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+    { value: 'in_progress', label: 'Em Progresso', icon: PlayCircle, color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
+    { value: 'done', label: 'Concluído', icon: CheckCircle2, color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
 ]
 
 const typeOptions = [
@@ -210,10 +210,10 @@ export function EditEntryDialog({ entry, onClose, onUpdate }: EditEntryDialogPro
                             <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Prioridade</label>
                             <div className="flex gap-2">
                                 {[
-                                    { value: 'low', label: 'Baixa', color: 'bg-slate-100 text-slate-600 border-slate-200' },
-                                    { value: 'medium', label: 'Média', color: 'bg-amber-50 text-amber-600 border-amber-200' },
-                                    { value: 'high', label: 'Alta', color: 'bg-orange-50 text-orange-600 border-orange-200' },
-                                    { value: 'urgent', label: 'Urgente', color: 'bg-rose-50 text-rose-600 border-rose-200' }
+                                    { value: 'low', label: 'Baixa', color: 'bg-muted text-foreground border-border' },
+                                    { value: 'medium', label: 'Média', color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+                                    { value: 'high', label: 'Alta', color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
+                                    { value: 'urgent', label: 'Urgente', color: 'bg-rose-500/10 text-rose-500 border-rose-500/20' }
                                 ].map((opt) => (
                                     <button
                                         key={opt.value}

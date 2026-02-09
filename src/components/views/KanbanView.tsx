@@ -26,23 +26,23 @@ const columns: Column[] = [
     { 
         id: 'pending', 
         title: 'Pendente', 
-        color: 'text-amber-600',
-        bgColor: 'bg-amber-50',
-        borderColor: 'border-amber-200'
+        color: 'text-amber-500',
+        bgColor: 'bg-amber-500/10',
+        borderColor: 'border-amber-500/20'
     },
     { 
         id: 'in_progress', 
         title: 'Em Progresso', 
-        color: 'text-blue-600',
-        bgColor: 'bg-blue-50',
-        borderColor: 'border-blue-200'
+        color: 'text-blue-500',
+        bgColor: 'bg-blue-500/10',
+        borderColor: 'border-blue-500/20'
     },
     { 
         id: 'done', 
         title: 'Concluído', 
-        color: 'text-emerald-600',
-        bgColor: 'bg-emerald-50',
-        borderColor: 'border-emerald-200'
+        color: 'text-emerald-500',
+        bgColor: 'bg-emerald-500/10',
+        borderColor: 'border-emerald-500/20'
     },
 ]
 
@@ -146,7 +146,7 @@ export function KanbanView() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl text-indigo-600">
+                        <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
                             <LayoutGrid className="h-6 w-6" />
                         </div>
                         <div>
@@ -283,8 +283,8 @@ function KanbanColumn({
 
                 {/* Drop Zone Indicator */}
                 {isOver && isDragOver && entries.length === 0 && (
-                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-indigo-300 rounded-xl bg-indigo-50/50">
-                        <span className="text-sm text-indigo-500 font-medium">
+                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-primary/30 rounded-xl bg-primary/5">
+                        <span className="text-sm text-primary font-medium">
                             Solte aqui
                         </span>
                     </div>
@@ -307,11 +307,11 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
     const priority = (entry as any).priority || 'medium'
     
     const priorityConfig = {
-        urgent: { color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-200', label: 'Urgente' },
-        high: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200', label: 'Alta' },
-        medium: { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200', label: 'Média' },
-        low: { color: 'text-slate-500', bg: 'bg-slate-100', border: 'border-slate-200', label: 'Baixa' }
-    }[priority as string] || { color: 'text-slate-500', bg: 'bg-slate-50', border: 'border-slate-200', label: 'Normal' }
+        urgent: { color: 'text-rose-500', bg: 'bg-rose-500/10', border: 'border-rose-500/20', label: 'Urgente' },
+        high: { color: 'text-orange-500', bg: 'bg-orange-500/10', border: 'border-orange-500/20', label: 'Alta' },
+        medium: { color: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20', label: 'Média' },
+        low: { color: 'text-muted-foreground', bg: 'bg-muted', border: 'border-border', label: 'Baixa' }
+    }[priority as string] || { color: 'text-muted-foreground', bg: 'bg-muted', border: 'border-border', label: 'Normal' }
 
     return (
         <motion.div
@@ -386,8 +386,8 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
                                 <span className={cn(
                                     "text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1",
                                     new Date((entry as any).due_date) < new Date() 
-                                        ? "bg-rose-100 text-rose-600" 
-                                        : "bg-indigo-50 text-indigo-600"
+                                        ? "bg-rose-500/10 text-rose-500" 
+                                        : "bg-primary/10 text-primary"
                                 )}>
                                     📅 {new Date((entry as any).due_date).toLocaleDateString('pt-BR')}
                                 </span>
@@ -396,13 +396,13 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                                 onClick={(e) => { e.stopPropagation(); onEdit(); }}
-                                className="p-1 text-slate-400 hover:text-indigo-500 transition-colors"
+                                className="p-1 text-muted-foreground hover:text-primary transition-colors"
                             >
                                 <Pencil className="h-3 w-3" />
                             </button>
                             <button
                                 onClick={(e) => onDelete(entry.id, e)}
-                                className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                                className="p-1 text-muted-foreground hover:text-destructive transition-colors"
                             >
                                 <Trash2 className="h-3 w-3" />
                             </button>

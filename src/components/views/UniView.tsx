@@ -72,9 +72,9 @@ export function UniView() {
 
     const getStatusColor = (status: string | null) => {
         switch (status) {
-            case 'done': return 'bg-emerald-100 text-emerald-700'
-            case 'in_progress': return 'bg-blue-100 text-blue-700'
-            default: return 'bg-amber-100 text-amber-700'
+            case 'done': return 'bg-emerald-500/10 text-emerald-500'
+            case 'in_progress': return 'bg-blue-500/10 text-blue-500'
+            default: return 'bg-amber-500/10 text-amber-500'
         }
     }
 

@@ -22,27 +22,27 @@ export function StatCard({
 }: StatCardProps) {
     const variants = {
         amber: {
-            text: 'text-amber-600',
-            bg: 'bg-amber-50/50',
-            border: 'border-amber-100/50',
+            text: 'text-amber-500',
+            bg: 'bg-amber-500/10',
+            border: 'border-amber-500/20',
             icon: 'text-amber-500'
         },
         blue: {
-            text: 'text-blue-600',
-            bg: 'bg-blue-50/50',
-            border: 'border-blue-100/50',
+            text: 'text-blue-500',
+            bg: 'bg-blue-500/10',
+            border: 'border-blue-500/20',
             icon: 'text-blue-500'
         },
         emerald: {
-            text: 'text-emerald-600',
-            bg: 'bg-emerald-50/50',
-            border: 'border-emerald-100/50',
+            text: 'text-emerald-500',
+            bg: 'bg-emerald-500/10',
+            border: 'border-emerald-500/20',
             icon: 'text-emerald-500'
         },
         indigo: {
-            text: 'text-indigo-600',
-            bg: 'bg-indigo-50/50',
-            border: 'border-indigo-100/50',
+            text: 'text-indigo-500',
+            bg: 'bg-indigo-500/10',
+            border: 'border-indigo-500/20',
             icon: 'text-indigo-500'
         },
         slate: {

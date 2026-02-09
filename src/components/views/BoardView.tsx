@@ -65,7 +65,7 @@ export function BoardView() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="relative">
-                            <div className="p-3 bg-gradient-to-br from-amber-100 to-yellow-200 rounded-2xl text-amber-600 shadow-lg shadow-amber-200/50">
+                            <div className="p-3 bg-amber-500/10 rounded-2xl text-amber-500 shadow-lg shadow-amber-500/20">
                                 <Lightbulb className="h-7 w-7" />
                             </div>
                             <motion.div 
@@ -77,8 +77,8 @@ export function BoardView() {
                             </motion.div>
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Mural de Ideias</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">
+                            <h2 className="text-2xl font-bold tracking-tight text-foreground">Mural de Ideias</h2>
+                            <p className="text-sm text-muted-foreground mt-0.5">
                                 {entries?.length || 0} {entries?.length === 1 ? 'ideia brilhante' : 'ideias brilhantes'}
                             </p>
                         </div>
@@ -160,13 +160,13 @@ export function BoardView() {
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50"
+                        className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-border rounded-2xl bg-card/50"
                     >
-                        <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-yellow-200 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-amber-200/30">
+                        <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10">
                             <Lightbulb className="h-10 w-10 text-amber-500" />
                         </div>
-                        <p className="font-semibold text-lg text-slate-600">Nenhuma ideia ainda...</p>
-                        <p className="text-sm text-slate-400 mt-2 max-w-xs text-center">
+                        <p className="font-semibold text-lg text-foreground">Nenhuma ideia ainda...</p>
+                        <p className="text-sm text-muted-foreground mt-2 max-w-xs text-center">
                             Use o Magic Input na Home e compartilhe suas ideias brilhantes!
                         </p>
                     </motion.div>

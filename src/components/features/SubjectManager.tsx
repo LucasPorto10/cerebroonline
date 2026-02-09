@@ -126,7 +126,7 @@ export function SubjectManager({ onSelectSubject, selectedSubjectId, showAddButt
                 {showAddButton && !isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                        className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium"
                     >
                         <Plus className="h-4 w-4" />
                         Nova
@@ -312,7 +312,7 @@ function SubjectItem({
                     </button>
                     <button 
                         onClick={() => onUpdate({ name: editName, color: editColor, icon: editIcon })}
-                        className="p-1.5 text-emerald-500 hover:text-emerald-600"
+                        className="p-1.5 text-emerald-500 hover:text-emerald-400"
                     >
                         <Check className="h-4 w-4" />
                     </button>

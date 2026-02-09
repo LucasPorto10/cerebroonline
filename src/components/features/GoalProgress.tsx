@@ -16,11 +16,12 @@ const sizeMap = {
 }
 
 const colorMap = {
-    indigo: { track: 'stroke-indigo-100', bar: 'stroke-indigo-500', text: 'text-indigo-600' },
-    emerald: { track: 'stroke-emerald-100', bar: 'stroke-emerald-500', text: 'text-emerald-600' },
-    amber: { track: 'stroke-amber-100', bar: 'stroke-amber-500', text: 'text-amber-600' },
-    rose: { track: 'stroke-rose-100', bar: 'stroke-rose-500', text: 'text-rose-600' },
-    slate: { track: 'stroke-slate-100', bar: 'stroke-slate-800', text: 'text-slate-800' },
+    indigo: { track: 'stroke-indigo-500/20', bar: 'stroke-indigo-500', text: 'text-indigo-500' },
+    emerald: { track: 'stroke-emerald-500/20', bar: 'stroke-emerald-500', text: 'text-emerald-500' },
+    amber: { track: 'stroke-amber-500/20', bar: 'stroke-amber-500', text: 'text-amber-500' },
+    blue: { track: 'stroke-blue-500/20', bar: 'stroke-blue-500', text: 'text-blue-500' },
+    rose: { track: 'stroke-rose-500/20', bar: 'stroke-rose-500', text: 'text-rose-500' },
+    slate: { track: 'stroke-muted-foreground/20', bar: 'stroke-foreground', text: 'text-foreground' },
 }
 
 export function GoalProgress({ 
