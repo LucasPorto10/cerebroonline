@@ -58,6 +58,10 @@ coverage/
 # TypeScript cache
 *.tsbuildinfo
 
+# Deno
+deno.lock
+
+
 # Misc
 *.pem
 .cache/
