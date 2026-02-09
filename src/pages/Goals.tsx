@@ -146,34 +146,34 @@ export default function Goals() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
-                            <div className="p-2.5 bg-slate-100 rounded-xl">
-                                <Target className="h-6 w-6 text-slate-700" />
+                            <div className="p-2.5 bg-muted rounded-xl">
+                                <Target className="h-6 w-6 text-primary" />
                             </div>
                             <div>
-                                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Minhas Metas</h1>
-                                <p className="text-slate-500 text-sm">Acompanhe seu progresso</p>
+                                <h1 className="text-2xl md:text-3xl font-bold text-foreground">Minhas Metas</h1>
+                                <p className="text-muted-foreground text-sm">Acompanhe seu progresso</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Stats Pills */}
                     <div className="flex gap-3">
-                        <div className="px-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-center shadow-sm">
-                            <p className="text-slate-400 text-[10px] uppercase tracking-wider">Progresso</p>
-                            <p className="text-xl font-bold text-slate-800">{totalProgress}%</p>
+                        <div className="px-4 py-2.5 bg-card border border-border rounded-2xl text-center shadow-sm">
+                            <p className="text-muted-foreground text-[10px] uppercase tracking-wider">Progresso</p>
+                            <p className="text-xl font-bold text-foreground">{totalProgress}%</p>
                         </div>
-                        <div className="px-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-center shadow-sm">
-                            <p className="text-slate-400 text-[10px] uppercase tracking-wider">Concluídas</p>
-                            <p className="text-xl font-bold text-slate-800">{completedGoals}/{goals.length}</p>
+                        <div className="px-4 py-2.5 bg-card border border-border rounded-2xl text-center shadow-sm">
+                            <p className="text-muted-foreground text-[10px] uppercase tracking-wider">Concluídas</p>
+                            <p className="text-xl font-bold text-foreground">{completedGoals}/{goals.length}</p>
                         </div>
                     </div>
                 </div>
             </motion.div>
 
             {/* Tabs + Navigation */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 rounded-2xl p-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card border border-border rounded-2xl p-3">
                 {/* Period Tabs */}
-                <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl">
+                <div className="flex items-center gap-1 p-1 bg-muted rounded-xl">
                     {(['weekly', 'monthly'] as const).map((tab) => (
                         <button
                             key={tab}
@@ -181,8 +181,8 @@ export default function Goals() {
                             className={cn(
                                 "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
                                 activeTab === tab
-                                    ? "bg-white text-slate-900 shadow-sm"
-                                    : "text-slate-500 hover:text-slate-700"
+                                    ? "bg-background text-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground"
                             )}
                         >
                             {tab === 'weekly' ? <Calendar className="h-4 w-4" /> : <TrendingUp className="h-4 w-4" />}
@@ -195,16 +195,16 @@ export default function Goals() {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => navigatePeriod('prev')}
-                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                        className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </button>
-                    <span className="px-3 py-1.5 text-sm font-medium text-slate-700 capitalize min-w-[160px] text-center">
+                    <span className="px-3 py-1.5 text-sm font-medium text-foreground capitalize min-w-[160px] text-center">
                         {getPeriodLabel()}
                     </span>
                     <button
                         onClick={() => navigatePeriod('next')}
-                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                        className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
@@ -232,20 +232,20 @@ export default function Goals() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50"
+                        className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-border rounded-2xl bg-muted/20"
                     >
-                        <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
-                            <Sparkles className="h-7 w-7 text-slate-400" />
+                        <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
+                            <Sparkles className="h-7 w-7 text-muted-foreground" />
                         </div>
-                        <p className="font-semibold text-slate-600 text-lg">Nenhuma meta ainda</p>
-                        <p className="text-sm text-slate-400 mt-1 mb-6">
+                        <p className="font-semibold text-foreground text-lg">Nenhuma meta ainda</p>
+                        <p className="text-sm text-muted-foreground mt-1 mb-6">
                             Crie sua primeira meta {activeTab === 'weekly' ? 'semanal' : 'mensal'}
                         </p>
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setIsAddDialogOpen(true)}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-medium shadow-sm hover:bg-slate-800 transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-medium shadow-sm hover:opacity-90 transition-all"
                         >
                             <Plus className="h-4 w-4" />
                             Criar Meta
@@ -256,7 +256,7 @@ export default function Goals() {
                 {/* Loading */}
                 {isLoading && (
                     <div className="flex items-center justify-center py-16">
-                        <div className="animate-pulse text-slate-400">Carregando metas...</div>
+                        <div className="animate-pulse text-muted-foreground">Carregando metas...</div>
                     </div>
                 )}
             </div>
@@ -269,7 +269,7 @@ export default function Goals() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsAddDialogOpen(true)}
-                    className="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-white rounded-2xl shadow-lg flex items-center justify-center hover:bg-slate-800 transition-all z-40"
+                    className="fixed bottom-8 right-8 w-14 h-14 bg-primary text-primary-foreground rounded-2xl shadow-lg flex items-center justify-center hover:opacity-90 transition-all z-40"
                 >
                     <Plus className="h-6 w-6" />
                 </motion.button>

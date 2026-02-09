@@ -93,7 +93,7 @@ export function UniView() {
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-gradient-to-br from-violet-100 to-purple-100 rounded-xl text-violet-600">
+                        <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
                             <GraduationCap className="h-6 w-6" />
                         </div>
                         <div>
@@ -142,9 +142,9 @@ export function UniView() {
                     <div className="flex-1 min-w-0 overflow-hidden">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-64">
-                                <div className="animate-pulse text-slate-400">Carregando...</div>
+                                <div className="animate-pulse text-muted-foreground">Carregando...</div>
                             </div>
-                        ) : entries && entries.length > 0 ? (
+                        ) : (entries && entries.length > 0) ? (
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                                 <AnimatePresence mode="popLayout">
                                     {entries.map((entry, index) => (
@@ -200,7 +200,7 @@ export function UniView() {
                                             )}
 
                                             {/* Footer */}
-                                            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                                            <div className="flex items-center justify-between pt-2 border-t border-border">
                                                 <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                                                     <Clock className="h-3 w-3" />
                                                     {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: ptBR })}
@@ -208,13 +208,13 @@ export function UniView() {
                                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); setEditingEntry(entry); }}
-                                                        className="p-1 text-slate-400 hover:text-indigo-500"
+                                                        className="p-1 text-muted-foreground hover:text-primary"
                                                     >
                                                         <Pencil className="h-3.5 w-3.5" />
                                                     </button>
                                                     <button
                                                         onClick={(e) => deleteEntry(entry.id, e)}
-                                                        className="p-1 text-slate-400 hover:text-red-500"
+                                                        className="p-1 text-muted-foreground hover:text-destructive"
                                                     >
                                                         <Trash2 className="h-3.5 w-3.5" />
                                                     </button>
