@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { AddGoalDialog } from './AddGoalDialog'
-import React from 'react'
+
 
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
