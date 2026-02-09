@@ -98,9 +98,9 @@ export function CalendarView() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-slate-100 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
                 
-                <div className="relative flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <div className="relative flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-2xl font-bold text-slate-900 flex items-center justify-center md:justify-start gap-2">
                             <Sparkles className="h-6 w-6 text-amber-500" />
                             Calendário
                         </h1>
@@ -110,16 +110,16 @@ export function CalendarView() {
                     </div>
                     
                     {/* Stats pills */}
-                    <div className="flex gap-2">
-                        <div className="px-4 py-2 rounded-xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm">
-                            <p className="text-xs text-slate-500">Este mês</p>
-                            <p className="text-lg font-bold text-slate-900">
+                    <div className="flex w-full md:w-auto gap-3">
+                        <div className="flex-1 md:flex-none px-4 py-3 rounded-2xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm text-center md:text-left">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Este mês</p>
+                            <p className="text-2xl md:text-xl font-bold text-slate-900 mt-0.5">
                                 {entries.filter(e => isSameMonth(parseISO(e.created_at), currentMonth)).length}
                             </p>
                         </div>
-                        <div className="px-4 py-2 rounded-xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm">
-                            <p className="text-xs text-slate-500">Concluídas</p>
-                            <p className="text-lg font-bold text-emerald-600">
+                        <div className="flex-1 md:flex-none px-4 py-3 rounded-2xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm text-center md:text-left">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Concluídas</p>
+                            <p className="text-2xl md:text-xl font-bold text-emerald-600 mt-0.5">
                                 {entries.filter(e => e.status === 'done' && isSameMonth(parseISO(e.created_at), currentMonth)).length}
                             </p>
                         </div>

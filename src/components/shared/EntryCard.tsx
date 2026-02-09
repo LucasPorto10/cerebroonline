@@ -78,7 +78,7 @@ export function EntryCard({
                 )}>
                     {entry.content}
                 </p>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex flex-wrap items-center gap-2 mt-1">
                     {showCategory && categoryName && (
                         <span className={cn(
                             "text-[10px] px-2 py-0.5 rounded-full font-medium",
