@@ -9,7 +9,7 @@ export function exportToPDF(entries: ExportEntry[], stats: any) {
     // Header
     doc.setFontSize(20)
     doc.setTextColor(40, 40, 40)
-    doc.text('Relatório MindSync', 14, 22)
+    doc.text('Relatório CerebroOnline', 14, 22)
     
     doc.setFontSize(10)
     doc.setTextColor(100)
@@ -67,5 +67,5 @@ export function exportToPDF(entries: ExportEntry[], stats: any) {
         alternateRowStyles: { fillColor: [245, 247, 255] }
     } as any)
 
-    doc.save(`mindsync-relatorio-${today.replace(/\//g, '-')}.pdf`)
+    doc.save(`cerebro-online-relatorio-${today.replace(/\//g, '-')}.pdf`)
 }

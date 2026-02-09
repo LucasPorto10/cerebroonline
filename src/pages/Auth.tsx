@@ -80,13 +80,20 @@ export default function AuthPage() {
             setIsSubmitting(false)
         }
     }
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-            <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-slate-200 p-8 animate-in fade-in zoom-in duration-300">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 relative overflow-hidden">
+            {/* Background Blobs */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+            <div className="w-full max-w-md glass-card rounded-3xl p-8 relative z-10 animate-in fade-in zoom-in duration-500">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">MindSync</h1>
-                    <p className="text-slate-500 mt-2">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-3xl shadow-lg shadow-primary/20 mx-auto mb-6">
+                        🧠
+                    </div>
+                    <h1 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">CerebroOnline</h1>
+                    <p className="text-primary font-bold tracking-[0.2em] uppercase text-[10px] mt-1">by PortoSol</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm">
                         {isLogin ? 'Bem-vindo de volta ao seu segundo cérebro.' : 'Crie sua conta e organize sua mente.'}
                     </p>
                 </div>
@@ -135,8 +142,8 @@ export default function AuthPage() {
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={isSubmitting}>
-                        {isSubmitting ? 'Processando...' : (isLogin ? 'Entrar' : 'Criar Conta')}
+                    <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white h-12 rounded-2xl shadow-lg shadow-primary/20" disabled={isSubmitting}>
+                        {isSubmitting ? 'Processando...' : (isLogin ? 'Entrar Agora' : 'Criar minha Conta')}
                     </Button>
                 </form>
 

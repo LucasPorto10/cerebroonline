@@ -65,7 +65,7 @@ export default function Home() {
             transition={{ duration: 0.4 }}
         >
             {/* Header Section */}
-            <div className="relative -mx-4 -mt-4 px-4 pt-10 pb-14 bg-gradient-to-b from-indigo-50/60 via-white to-white border-b border-slate-100/50">
+            <div className="relative -mx-4 -mt-4 px-4 pt-10 pb-14 bg-gradient-to-b from-primary/5 via-background to-background border-b border-border/50">
                 <div className="max-w-4xl mx-auto space-y-6">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
@@ -73,17 +73,17 @@ export default function Home() {
                         className="flex items-center justify-between"
                     >
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl flex items-center gap-3">
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl flex items-center gap-3">
                                 Olá, {user?.user_metadata.full_name?.split(' ')[0] || 'Viajante'}
                                 <span className="text-2xl">👋</span>
                             </h1>
-                            <p className="text-base text-slate-500 mt-2 max-w-xl">
+                            <p className="text-base text-muted-foreground mt-2 max-w-xl">
                                 O que vamos realizar hoje? Deixe sua mente fluir e a IA organizar.
                             </p>
                         </div>
-                        <div className="hidden sm:flex items-center gap-2 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
-                            <LayoutDashboard className="h-5 w-5 text-indigo-500" />
-                            <span className="text-sm font-medium text-slate-600">Dashboard</span>
+                        <div className="hidden sm:flex items-center gap-2 bg-card glass px-4 py-2 rounded-2xl shadow-sm border border-border">
+                            <LayoutDashboard className="h-5 w-5 text-primary" />
+                            <span className="text-sm font-medium text-muted-foreground">Dashboard</span>
                         </div>
                     </motion.div>
 
@@ -148,10 +148,10 @@ export default function Home() {
                             <h2 className="text-lg font-semibold text-slate-900">Exportar</h2>
                         </div>
                         
-                        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                            <p className="text-xs text-slate-500">
-                                Baixe seus dados para backup ou análise.
-                            </p>
+                <div className="bg-card glass p-5 rounded-2xl border border-border shadow-sm space-y-4">
+                    <p className="text-xs text-muted-foreground">
+                        Baixe seus dados para backup ou análise.
+                    </p>
                             
                             <ExportButton
                                 label="Relatório PDF"

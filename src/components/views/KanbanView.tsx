@@ -3,7 +3,7 @@ import { supabase } from '@/api/supabase'
 import { Database } from '@/types/supabase'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
-import { LayoutGrid, Clock, GripVertical, Sparkles, Pencil, Trash2 } from 'lucide-react'
+import { LayoutGrid, Clock, Sparkles, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState, useMemo } from 'react'
 import { EditEntryDialog } from '@/components/features/EditEntryDialog'
@@ -248,15 +248,17 @@ function KanbanColumn({
             }}
         >
             {/* Column Header */}
-            <div className="flex items-center justify-between p-4 border-b border-black/5">
+            <div className={cn(
+                "flex items-center justify-between p-4 border-b",
+                column.borderColor
+            )}>
                 <div className="flex items-center gap-2">
-                    <span className={cn("font-semibold", column.color)}>
+                    <span className={cn("font-bold text-sm uppercase tracking-wider", column.color)}>
                         {column.title}
                     </span>
                     <span className={cn(
-                        "text-xs px-2 py-0.5 rounded-full font-medium",
-                        column.color,
-                        column.bgColor
+                        "text-xs px-2.5 py-0.5 rounded-full font-bold bg-white/50",
+                        column.color
                     )}>
                         {entries.length}
                     </span>
@@ -302,6 +304,15 @@ interface KanbanCardProps {
 }
 
 function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: KanbanCardProps) {
+    const priority = (entry as any).priority || 'medium'
+    
+    const priorityConfig = {
+        urgent: { color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-200', label: 'Urgente' },
+        high: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200', label: 'Alta' },
+        medium: { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200', label: 'Média' },
+        low: { color: 'text-slate-500', bg: 'bg-slate-100', border: 'border-slate-200', label: 'Baixa' }
+    }[priority as string] || { color: 'text-slate-500', bg: 'bg-slate-50', border: 'border-slate-200', label: 'Normal' }
+
     return (
         <motion.div
             layout
@@ -313,32 +324,51 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
             onClick={onEdit}
-            className="group bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 cursor-grab active:cursor-grabbing hover:shadow-md transition-all"
+            className={cn(
+                "group bg-white rounded-xl p-4 shadow-sm border cursor-grab active:cursor-grabbing hover:shadow-md transition-all relative overflow-hidden",
+                priority === 'urgent' ? 'border-rose-200' : 'border-slate-200/80'
+            )}
         >
+            {/* Priority Stripe for Urgent/High */}
+            {(priority === 'urgent' || priority === 'high') && (
+                <div className={cn(
+                    "absolute left-0 top-0 bottom-0 w-1",
+                    priority === 'urgent' ? 'bg-rose-500' : 'bg-orange-500'
+                )} />
+            )}
+
             {/* Drag Handle */}
-            <div className="flex items-start gap-2">
-                <div className="opacity-0 group-hover:opacity-50 transition-opacity mt-0.5">
-                    <GripVertical className="h-4 w-4 text-slate-400" />
-                </div>
+            <div className="flex items-start gap-2 pl-2">
                 <div className="flex-1 min-w-0">
-                    {/* Emoji + Content */}
-                    <div className="flex items-start gap-2">
+                    {/* Header: Priority + Emoji */}
+                    <div className="flex items-center justify-between mb-2">
                         <div className={cn(
                             "flex-shrink-0 flex items-center justify-center transition-all",
                             !(entry.metadata as any)?.emoji && "animate-pulse"
                         )}>
                             {(entry.metadata as any)?.emoji || <Sparkles className="h-3 w-3 text-slate-300" />}
                         </div>
-                        <p className="text-sm font-medium text-slate-800 line-clamp-3 flex-1">
-                            {entry.content}
-                        </p>
+                        {priority !== 'medium' && priority !== 'low' && (
+                            <span className={cn(
+                                "text-[10px] uppercase tracking-wide font-bold px-1.5 py-0.5 rounded",
+                                priorityConfig.bg,
+                                priorityConfig.color
+                            )}>
+                                {priorityConfig.label}
+                            </span>
+                        )}
                     </div>
+
+                    {/* Content */}
+                    <p className="text-sm font-medium text-slate-800 line-clamp-3 mb-2">
+                        {entry.content}
+                    </p>
                     
                     {/* Tags */}
                     {(entry.metadata as any)?.tags && (
-                        <div className="flex flex-wrap gap-1 mt-2">
+                        <div className="flex flex-wrap gap-1 mb-3">
                             {(entry.metadata as any).tags.slice(0, 2).map((tag: string) => (
-                                <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
+                                <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded border border-slate-100">
                                     {tag}
                                 </span>
                             ))}
@@ -346,11 +376,23 @@ function KanbanCard({ entry, index, onDragStart, onDragEnd, onEdit, onDelete }: 
                     )}
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-                        <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: ptBR })}
-                        </span>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: ptBR })}
+                            </span>
+                            {(entry as any).due_date && (
+                                <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1",
+                                    new Date((entry as any).due_date) < new Date() 
+                                        ? "bg-rose-100 text-rose-600" 
+                                        : "bg-indigo-50 text-indigo-600"
+                                )}>
+                                    📅 {new Date((entry as any).due_date).toLocaleDateString('pt-BR')}
+                                </span>
+                            )}
+                        </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                                 onClick={(e) => { e.stopPropagation(); onEdit(); }}

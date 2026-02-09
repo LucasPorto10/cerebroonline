@@ -62,7 +62,7 @@ export function StatCard({
             transition={{ delay: 0.1 + index * 0.05 }}
             whileHover={{ y: -2, transition: { duration: 0.2 } }}
             className={cn(
-                "group relative p-6 rounded-3xl border bg-white transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 overflow-hidden",
+                "group relative p-6 rounded-3xl border glass-card transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 overflow-hidden",
                 style.border
             )}
         >
@@ -75,7 +75,7 @@ export function StatCard({
                 </div>
                 
                 <div className="flex flex-col">
-                    <span className={cn("text-3xl font-bold tracking-tight text-slate-900")}>
+                    <span className={cn("text-3xl font-bold tracking-tight text-foreground")}>
                         {isLoading ? '...' : count}
                     </span>
                     <span className="text-xs font-semibold text-slate-400 mt-0.5 uppercase tracking-widest">

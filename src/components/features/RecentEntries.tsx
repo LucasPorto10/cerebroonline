@@ -69,8 +69,8 @@ export function RecentEntries() {
 
     if (!entries?.length) {
         return (
-            <div className="text-center text-slate-400 py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                <p className="font-medium text-slate-500">Nada aqui ainda.</p>
+            <div className="text-center text-muted-foreground py-10 bg-card/50 glass rounded-2xl border border-dashed border-border">
+                <p className="font-medium text-foreground">Nada aqui ainda.</p>
                 <p className="text-sm mt-1">Use o campo acima para criar sua primeira nota!</p>
             </div>
         )
@@ -79,8 +79,8 @@ export function RecentEntries() {
     return (
         <>
             <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-indigo-500" />
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
                     Recentes
                 </h2>
 

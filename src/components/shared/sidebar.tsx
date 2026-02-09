@@ -1,4 +1,4 @@
-import { Home, Briefcase, GraduationCap, Lightbulb, ChevronLeft, ChevronRight, LogOut, Menu, X, LayoutGrid, Calendar, Inbox, User } from 'lucide-react'
+import { Home, Briefcase, GraduationCap, Lightbulb, ChevronLeft, ChevronRight, LogOut, Menu, X, LayoutGrid, Calendar, Inbox, User, Target } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -10,6 +10,7 @@ const navItems = [
   { icon: Home, label: 'Dashboard', slug: '/' },
   { icon: LayoutGrid, label: 'Kanban', slug: '/kanban' },
   { icon: Calendar, label: 'Calendário', slug: '/calendar' },
+  { icon: Target, label: 'Metas', slug: '/goals' },
   { icon: Inbox, label: 'Doméstico', slug: '/home' },
   { icon: Briefcase, label: 'Trabalho', slug: '/work' },
   { icon: GraduationCap, label: 'Faculdade', slug: '/uni' },
@@ -40,17 +41,25 @@ export const Sidebar: React.FC = () => {
       "flex items-center gap-3 transition-all duration-300",
       collapsed && !isMobile ? "justify-center" : "justify-start px-2"
     )}>
-      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-xl shadow-lg shadow-indigo-200 shrink-0">
+      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-xl shadow-lg shadow-primary/20 shrink-0">
         🧠
       </div>
-      <h1
-        className={cn(
-          'font-bold text-slate-900 tracking-tight transition-all duration-300',
-          collapsed && !isMobile ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100 w-auto text-xl'
-        )}
-      >
-        MindSync
-      </h1>
+      <div className="flex flex-col">
+        <h1
+          className={cn(
+            'font-bold text-slate-900 dark:text-slate-100 tracking-tight transition-all duration-300 leading-tight',
+            collapsed && !isMobile ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100 w-auto text-xl'
+          )}
+        >
+          CerebroOnline
+        </h1>
+        <p className={cn(
+          "text-[10px] text-primary font-bold tracking-widest uppercase transition-all duration-300",
+          collapsed && !isMobile ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+        )}>
+          by PortoSol
+        </p>
+      </div>
     </div>
   )
 
@@ -59,13 +68,13 @@ export const Sidebar: React.FC = () => {
       to="/settings" 
       onClick={() => setMobileOpen(false)}
       className={cn(
-        "flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-all group",
+        "flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group",
         collapsed && !isMobile ? "justify-center" : ""
       )}
     >
       {/* Avatar */}
       <div className="relative shrink-0">
-        <div className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-white shadow-md">
+        <div className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-white dark:ring-slate-800 shadow-md">
           {avatarUrl ? (
             <img 
               src={avatarUrl} 
@@ -74,13 +83,13 @@ export const Sidebar: React.FC = () => {
               onError={(e) => (e.currentTarget.style.display = 'none')}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-sm">
+            <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-semibold text-sm">
               {userName ? getInitials(userName) : <User className="w-5 h-5" />}
             </div>
           )}
         </div>
         {/* Online indicator */}
-        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white" />
+        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white dark:border-slate-800" />
       </div>
 
       {/* User Info */}
@@ -88,10 +97,10 @@ export const Sidebar: React.FC = () => {
         "flex-1 min-w-0 transition-all duration-300",
         collapsed && !isMobile ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
       )}>
-        <p className="text-sm font-semibold text-slate-900 truncate">
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
           {userName || 'Seu Nome'}
         </p>
-        <p className="text-xs text-slate-400 truncate">
+        <p className="text-xs text-slate-400 dark:text-slate-500 truncate">
           {user?.email?.split('@')[0]}
         </p>
       </div>
@@ -108,7 +117,7 @@ export const Sidebar: React.FC = () => {
 
   const SidebarContent = () => (
     <>
-      <nav className="flex-1 px-3 space-y-1.5 mt-6">
+      <nav className="flex-1 px-3 space-y-1 mt-6">
         {navItems.map((item, index) => {
           const isActive = location.pathname === item.slug || (item.slug === '/' && location.pathname === '/dashboard')
           return (
@@ -124,14 +133,14 @@ export const Sidebar: React.FC = () => {
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium transition-all group relative',
                   isActive
-                    ? 'bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50'
-                    : 'hover:bg-slate-50 text-slate-500 hover:text-slate-900'
+                    ? 'bg-primary/10 text-primary shadow-sm shadow-primary/5'
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                 )}
               >
                 <item.icon
                   className={cn(
                     'h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110', 
-                    isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'
+                    isActive ? 'text-primary' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                   )}
                 />
                 <span className={cn(
@@ -144,7 +153,7 @@ export const Sidebar: React.FC = () => {
                 {isActive && (
                     <motion.div 
                         layoutId="active-pill"
-                        className="absolute left-0 w-1 h-6 bg-indigo-600 rounded-r-full"
+                        className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
                     />
                 )}
               </Link>
@@ -180,23 +189,23 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 z-40 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 z-40 flex items-center justify-between px-4">
         <Logo isMobile />
         <div className="flex items-center gap-2">
           {/* Mini avatar on mobile header */}
           <Link to="/settings" className="flex items-center">
-            <div className="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-slate-100">
+            <div className="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-slate-100 dark:ring-slate-800">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-indigo-500 flex items-center justify-center text-white font-semibold text-xs">
+                <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-semibold text-xs">
                   {userName ? getInitials(userName) : <User className="w-4 h-4" />}
                 </div>
               )}
             </div>
           </Link>
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)} className="rounded-xl">
-            <Menu className="h-6 w-6 text-slate-600" />
+            <Menu className="h-6 w-6 text-slate-600 dark:text-slate-300" />
           </Button>
         </div>
       </div>
@@ -235,7 +244,7 @@ export const Sidebar: React.FC = () => {
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          'hidden md:flex relative bg-white border-r border-slate-100 shadow-sm transition-all duration-300 ease-in-out flex-col z-30',
+          'hidden md:flex relative glass border-r-0 md:border-r border-slate-200/50 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-none transition-all duration-300 ease-in-out flex-col z-30',
           collapsed ? 'w-24' : 'w-72'
         )}
       >
@@ -248,7 +257,7 @@ export const Sidebar: React.FC = () => {
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
                 className={cn(
-                'absolute -right-10 top-2 bg-white border border-slate-100 rounded-full shadow-sm hover:bg-slate-50 z-20 transition-all hover:scale-110',
+                'absolute -right-10 top-2 glass rounded-full shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 z-20 transition-all hover:scale-110',
                 collapsed && "left-1/2 -translate-x-1/2 top-14 right-auto"
                 )}
             >

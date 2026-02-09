@@ -59,15 +59,15 @@ export function MagicInput({ onSend, disabled }: MagicInputProps) {
             {/* Main container */}
             <div
                 className={cn(
-                    "relative rounded-2xl border bg-white transition-all duration-300",
+                    "relative rounded-2xl border bg-card glass transition-all duration-300",
                     isFocused 
-                        ? "border-indigo-300 shadow-xl shadow-indigo-100/50" 
-                        : "border-slate-200 shadow-lg shadow-slate-100/50 hover:border-slate-300 hover:shadow-xl"
+                        ? "border-primary shadow-xl shadow-primary/10" 
+                        : "border-border shadow-lg shadow-slate-200/20 dark:shadow-none hover:border-slate-300 dark:hover:border-slate-700"
                 )}
             >
                 {/* Header badge */}
-                <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-100">
-                    <div className="flex items-center gap-2 text-indigo-600">
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
+                    <div className="flex items-center gap-2 text-primary">
                         <Wand2 className="h-4 w-4" />
                         <span className="text-xs font-semibold uppercase tracking-wider">Captura Inteligente</span>
                     </div>
@@ -88,7 +88,7 @@ export function MagicInput({ onSend, disabled }: MagicInputProps) {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder="Tarefa, ideia, lembrete... digite qualquer coisa!"
-                        className="w-full min-h-[80px] max-h-[200px] p-4 pr-16 text-base bg-transparent border-none resize-none focus:ring-0 placeholder:text-slate-400 text-slate-800 leading-relaxed outline-none"
+                        className="w-full min-h-[80px] max-h-[200px] p-4 pr-16 text-base bg-transparent border-none resize-none focus:ring-0 placeholder:text-muted-foreground text-foreground leading-relaxed outline-none"
                         disabled={disabled}
                         rows={1}
                     />

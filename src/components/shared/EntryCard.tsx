@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import { motion } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -18,7 +19,7 @@ interface EntryCardProps {
     compact?: boolean
 }
 
-export function EntryCard({ 
+export const EntryCard = forwardRef<HTMLDivElement, EntryCardProps>(({ 
     entry, 
     index = 0, 
     onEdit, 
@@ -27,7 +28,7 @@ export function EntryCard({
     categoryName,
     categoryColor,
     compact = false
-}: EntryCardProps) {
+}, ref) => {
     const emoji = (entry.metadata as any)?.emoji
 
     const getStatusIcon = () => {
@@ -42,6 +43,7 @@ export function EntryCard({
 
     return (
         <motion.div
+            ref={ref}
             layout
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -49,9 +51,9 @@ export function EntryCard({
             transition={{ delay: index * 0.03, type: 'spring', stiffness: 400, damping: 30 }}
             onClick={onEdit}
             className={cn(
-                "group flex items-center gap-3 bg-white rounded-xl border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all cursor-pointer",
+                "group flex items-center gap-3 bg-card glass rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer",
                 compact ? "p-3" : "p-4",
-                entry.status === 'done' && "bg-slate-50/50"
+                entry.status === 'done' && "bg-muted/30"
             )}
         >
             {/* Status Toggle */}
@@ -72,9 +74,9 @@ export function EntryCard({
             {/* Content */}
             <div className="flex-1 min-w-0">
                 <p className={cn(
-                    "text-slate-800 font-medium truncate",
+                    "text-foreground font-medium truncate",
                     compact ? "text-sm" : "",
-                    entry.status === 'done' && "line-through text-slate-400"
+                    entry.status === 'done' && "line-through text-muted-foreground"
                 )}>
                     {entry.content}
                 </p>
@@ -110,4 +112,6 @@ export function EntryCard({
             )}
         </motion.div>
     )
-}
+})
+
+EntryCard.displayName = 'EntryCard'

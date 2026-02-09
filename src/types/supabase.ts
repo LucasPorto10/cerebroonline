@@ -95,6 +95,9 @@ export interface Database {
                     status: 'pending' | 'in_progress' | 'done' | 'archived' | null
                     metadata: Json | null
                     tags: string[] | null
+                    priority: 'low' | 'medium' | 'high' | 'urgent' | null
+                    start_date: string | null
+                    due_date: string | null
                     created_at: string
                 }
                 Insert: {
@@ -107,6 +110,9 @@ export interface Database {
                     status?: 'pending' | 'in_progress' | 'done' | 'archived' | null
                     metadata?: Json | null
                     tags?: string[] | null
+                    priority?: 'low' | 'medium' | 'high' | 'urgent' | null
+                    start_date?: string | null
+                    due_date?: string | null
                     created_at?: string
                 }
                 Update: {
@@ -119,6 +125,9 @@ export interface Database {
                     status?: 'pending' | 'in_progress' | 'done' | 'archived' | null
                     metadata?: Json | null
                     tags?: string[] | null
+                    priority?: 'low' | 'medium' | 'high' | 'urgent' | null
+                    start_date?: string | null
+                    due_date?: string | null
                     created_at?: string
                 }
             }

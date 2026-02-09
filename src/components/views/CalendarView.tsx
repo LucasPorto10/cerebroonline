@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/api/supabase'
 import { Database } from '@/types/supabase'
 import { motion, AnimatePresence } from 'framer-motion'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight, CheckCircle2, Circle, Clock, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -52,6 +52,27 @@ export function CalendarView() {
     // Get entries for a specific date
     const getEntriesForDate = (date: Date) => {
         return entries.filter(entry => {
+            // Se tiver start_date e due_date, verifica intervalo
+            if ((entry as any).start_date && (entry as any).due_date) {
+                const start = parseISO((entry as any).start_date)
+                const end = parseISO((entry as any).due_date)
+                return isWithinInterval(date, { start: startOfDay(start), end: endOfDay(end) })
+            }
+            
+            // Se tiver apenas due_date, mostra no dia do prazo (ou criado -> prazo?)
+            // O usuário pediu "Se tem 5 dias de prazo deve aparecer nos 5 dias"
+            // Assumindo Created -> Due se não tiver Start
+            if ((entry as any).due_date) {
+                 const start = parseISO(entry.created_at)
+                 const end = parseISO((entry as any).due_date)
+                 // Apenas se o intervalo for razoável (ex: max 30 dias?), senão polui tudo.
+                 // Vamos mostrar no dia do prazo E no dia da criação? 
+                 // Ou mostrar Created -> Due. 
+                 // Vamos assumir Created -> Due.
+                 return isWithinInterval(date, { start: startOfDay(start), end: endOfDay(end) })
+            }
+
+            // Fallback: created_at
             const entryDate = parseISO(entry.created_at)
             return isSameDay(entryDate, date)
         })

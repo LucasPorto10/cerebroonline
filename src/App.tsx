@@ -12,6 +12,7 @@ import { UniView } from '@/components/views/UniView'
 import { CalendarView } from '@/components/views/CalendarView'
 import { useAuth } from '@/providers/auth-provider'
 import Settings from '@/pages/Settings'
+import Goals from '@/pages/Goals'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const { user, loading } = useAuth()
@@ -42,6 +43,7 @@ function App() {
                     <Route path="ideas" element={<BoardView />} />
                     <Route path="kanban" element={<KanbanView />} />
                     <Route path="calendar" element={<CalendarView />} />
+                    <Route path="goals" element={<Goals />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
             </Routes>

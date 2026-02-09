@@ -39,6 +39,9 @@ export function EditEntryDialog({ entry, onClose, onUpdate }: EditEntryDialogPro
     const [tags, setTags] = useState<string[]>(entry.tags || [])
     const [emoji, setEmoji] = useState<string>((entry.metadata as any)?.emoji || '📌')
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [startDate, setStartDate] = useState<string>((entry as any).start_date || '')
+    const [dueDate, setDueDate] = useState<string>((entry as any).due_date || '')
+    const [priority, setPriority] = useState<string>((entry as any).priority || 'medium')
     const queryClient = useQueryClient()
 
     // Fetch subjects for dropdown
@@ -67,6 +70,9 @@ export function EditEntryDialog({ entry, onClose, onUpdate }: EditEntryDialogPro
                     subject_id: subjectId,
                     tags,
                     metadata: { ...currentMetadata, emoji },
+                    start_date: startDate || null,
+                    due_date: dueDate || null,
+                    priority: priority
                 })
                 .eq('id', entry.id)
                 .select()
@@ -199,6 +205,32 @@ export function EditEntryDialog({ entry, onClose, onUpdate }: EditEntryDialogPro
                             </div>
                         </div>
 
+                        {/* Priority Selector */}
+                        <div>
+                            <label className="block text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">Prioridade</label>
+                            <div className="flex gap-2">
+                                {[
+                                    { value: 'low', label: 'Baixa', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+                                    { value: 'medium', label: 'Média', color: 'bg-amber-50 text-amber-600 border-amber-200' },
+                                    { value: 'high', label: 'Alta', color: 'bg-orange-50 text-orange-600 border-orange-200' },
+                                    { value: 'urgent', label: 'Urgente', color: 'bg-rose-50 text-rose-600 border-rose-200' }
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => setPriority(opt.value as any)}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border font-medium text-xs transition-all ${
+                                            priority === opt.value
+                                                ? `${opt.color} border-current ring-1 ring-current`
+                                                : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                                        }`}
+                                    >
+                                        <div className={`w-2 h-2 rounded-full ${opt.color.replace('bg-', 'bg-').replace('text-', 'bg-').split(' ')[1].replace('text-', 'bg-')}`} />
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Content Textarea */}
                         <div>
                             <label className="block text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">
@@ -270,6 +302,34 @@ export function EditEntryDialog({ entry, onClose, onUpdate }: EditEntryDialogPro
                                 currentTags={tags}
                                 onAddTag={(tag) => setTags([...tags, tag])}
                             />
+                        </div>
+
+                        {/* Date Range */}
+                        <div>
+                            <label className="block text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                Período
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-xs text-slate-400 mb-1 block">Início</label>
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-400 text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs text-slate-400 mb-1 block">Prazo</label>
+                                    <input
+                                        type="date"
+                                        value={dueDate}
+                                        onChange={(e) => setDueDate(e.target.value)}
+                                        className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-400 text-sm"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

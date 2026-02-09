@@ -12,8 +12,9 @@ import { motion } from 'framer-motion'
 import { 
   User, Lock, Save, Mail, Calendar, 
   Sparkles, Trophy, Target, CheckCircle2, Clock,
-  Palette, Moon, Zap
+  Palette, Moon, Zap, Sun
 } from 'lucide-react'
+import { useAppearance } from '@/hooks/useAppearance'
 import { cn } from '@/lib/utils'
 import { useStats } from '@/hooks/useStats'
 import { formatDistanceToNow } from 'date-fns'
@@ -53,7 +54,7 @@ export default function Settings() {
   const [isSubmittingProfile, setIsSubmittingProfile] = useState(false)
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState(user?.user_metadata?.emoji || '🚀')
-  const [selectedTheme, setSelectedTheme] = useState(user?.user_metadata?.theme || 'indigo')
+  const { theme, isDarkMode, updateTheme, toggleDarkMode } = useAppearance()
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'preferences'>('profile')
 
   const { register: registerProfile, handleSubmit: handleSubmitProfile, formState: { errors: profileErrors }, watch } = useForm<ProfileForm>({
@@ -81,7 +82,8 @@ export default function Settings() {
           avatar_url: data.avatarUrl,
           bio: data.bio,
           emoji: selectedEmoji,
-          theme: selectedTheme,
+          theme: theme,
+          darkMode: isDarkMode,
         }
       })
 
@@ -353,7 +355,7 @@ export default function Settings() {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Aparência</h3>
-                <p className="text-sm text-slate-500">Personalize a cara do seu MindSync</p>
+                <p className="text-sm text-slate-500">Personalize a cara do seu CerebroOnline</p>
               </div>
             </div>
 
@@ -367,12 +369,12 @@ export default function Settings() {
                       key={color.value}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setSelectedTheme(color.value)}
+                      onClick={() => updateTheme(color.value as any)}
                       className={cn(
                         "w-10 h-10 rounded-xl transition-all",
                         color.class,
-                        selectedTheme === color.value 
-                          ? "ring-2 ring-offset-2 ring-slate-400" 
+                        theme === color.value 
+                          ? "ring-2 ring-offset-2 ring-indigo-500" 
                           : "opacity-70 hover:opacity-100"
                       )}
                       title={color.name}
@@ -381,32 +383,36 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Dark Mode Toggle (UI only for now) */}
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+              {/* Dark Mode Toggle */}
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-slate-200">
-                    <Moon className="h-4 w-4 text-slate-600" />
+                  <div className="p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm">
+                    {isDarkMode ? <Moon className="h-4 w-4 text-indigo-400" /> : <Sun className="h-4 w-4 text-amber-500" />}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-700">Modo Escuro</p>
-                    <p className="text-xs text-slate-500">Em breve...</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Modo Escuro</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Ative para uma experiência mais confortável à noite</p>
                   </div>
                 </div>
-                <div className="px-3 py-1 bg-slate-200 rounded-full text-xs text-slate-500">
-                  Em breve
-                </div>
+                <button
+                  onClick={toggleDarkMode}
+                  className={cn(
+                    "w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out relative",
+                    isDarkMode ? "bg-indigo-600" : "bg-slate-300"
+                  )}
+                >
+                  <div className={cn(
+                    "w-4 h-4 bg-white rounded-full transition-transform duration-200",
+                    isDarkMode ? "translate-x-6" : "translate-x-0"
+                  )} />
+                </button>
               </div>
 
-              <Button 
-                onClick={() => {
-                  supabase.auth.updateUser({ data: { theme: selectedTheme, emoji: selectedEmoji } })
-                  toast.success('Preferências salvas!')
-                }}
-                className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Salvar Preferências
-              </Button>
+              <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/30">
+                <p className="text-xs text-indigo-600 dark:text-indigo-400 leading-relaxed">
+                  As suas preferências são salvas automaticamente na sua conta e sincronizadas entre todos os seus dispositivos.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
