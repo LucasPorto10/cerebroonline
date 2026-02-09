@@ -48,7 +48,7 @@ export function NeuralParticles() {
         const drawParticle = (p: Particle) => {
             ctx.beginPath()
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.5)'
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.4)'
             ctx.fill()
         }
 
@@ -67,7 +67,7 @@ export function NeuralParticles() {
                         ctx.beginPath()
                         ctx.moveTo(particles[i].x, particles[i].y)
                         ctx.lineTo(particles[j].x, particles[j].y)
-                        ctx.strokeStyle = `rgba(20, 184, 166, ${opacity})`
+                        ctx.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.6})`
                         ctx.lineWidth = 1
                         ctx.stroke()
                     }
@@ -83,7 +83,7 @@ export function NeuralParticles() {
                     ctx.beginPath()
                     ctx.moveTo(particles[i].x, particles[i].y)
                     ctx.lineTo(mouseRef.current.x, mouseRef.current.y)
-                    ctx.strokeStyle = `rgba(6, 182, 212, ${opacity})`
+                    ctx.strokeStyle = `rgba(52, 211, 153, ${opacity * 0.7})`
                     ctx.lineWidth = 1.5
                     ctx.stroke()
                 }
